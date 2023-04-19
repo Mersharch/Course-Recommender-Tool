@@ -46,6 +46,7 @@ const Forms = () => {
       dream: dreamRef.current?.value,
     };
     console.log(data);
+    alert('Your data has been logged to the console for now, Backend will be added soon')
     nameRef.current.value = "";
     ageRef.current.value = "";
     wassceRef.current.value = "";
