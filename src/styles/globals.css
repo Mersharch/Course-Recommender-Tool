@@ -2,26 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+
+label {
+    @apply text-blue-600 font-semibold text-lg 
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+input {
+    @apply appearance-none outline-none ring-2 p-2 text-teal-800 bg-slate-100 rounded-md focus:ring-gray-500
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+select {
+    @apply  outline-none ring-2 p-2 text-teal-800 bg-slate-100 rounded-md mb-2
 }
+
+button {
+    @apply w-full md:w-min px-10 md:px-20 py-2 h-min text-white ring-teal-300 ring-2 self-center mt-3 font-semibold italic
+}
+
+
+
+
