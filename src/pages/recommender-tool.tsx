@@ -1,16 +1,22 @@
 import React, { MutableRefObject, useRef, useEffect, useState } from "react";
-import { programOptions } from "@/data";
+import { dream_job, fav_sub, learning_styles, programOptions } from "@/data";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import swal from "sweetalert";
+import fetchResults from '@/components/results'
+
 
 interface Data {
-  name: string;
+  // name: string;
   age: number;
   gender: string;
-  wassce: number;
-  bece: number;
-  pp: string;
-  ppcp: number;
-  dream: string;
+  grade_aggregate: number;
+  interest: string;
+  dream_job: string;
+  fav_sub1: string;
+  fav_sub2: string;
+  fav_sub3: string;
+  learning_style: string;
 }
 
 const Forms = () => {
@@ -18,51 +24,72 @@ const Forms = () => {
   const nameRef = useRef() as MutableRefObject<HTMLInputElement>;
   // another way to get past the useRef eror is to use "useRef<HTMLInputElement | null>(null)"
   const ageRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const dreamRef = useRef() as MutableRefObject<HTMLInputElement>;
   const wassceRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const beceRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const ppcpRef = useRef() as MutableRefObject<HTMLInputElement>;
 
-  const [ppValue, setPpValue] = useState<string>("");
+  const [interestValue, setInterestValue] = useState<string>("");
   const [genderValue, setGenderValue] = useState<string>("");
+  const [dreamValue, setDreamValue] = useState<string>("");
+  const [favSub1, setfavSub1] = useState<string>("");
+  const [favSub2, setfavSub2] = useState<string>("");
+  const [favSub3, setfavSub3] = useState<string>("");
+  const [learning, setLearning] = useState<string>("");
 
-  useEffect(() => {
-    const pp = document.getElementById("pp") as HTMLSelectElement;
-    setPpValue(pp.options[pp.selectedIndex].value);
-    const gender = document.getElementById("gender") as HTMLSelectElement;
-    setGenderValue(gender.options[gender.selectedIndex].value);
-  }, [ppValue, genderValue]);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (favSub1 === favSub2 || favSub1 === favSub3 || favSub2 === favSub3) {
+      swal('Kindly make sure you have selected unique favorite subjects')
+      return
+    }
+
+    if (!nameRef.current.value || !ageRef.current.value || !genderValue || !wassceRef.current.value || !interestValue || !dreamValue || !favSub1 || !favSub2 || !favSub3 || !learning) {
+      swal('Kindly fill all the fields')
+      return
+    }
     const data: Data = {
-      name: nameRef.current?.value,
       age: Number(ageRef.current?.value),
       gender: genderValue,
-      wassce: Number(wassceRef.current?.value),
-      bece: Number(beceRef.current?.value),
-      pp: ppValue,
-      ppcp: Number(ppcpRef.current?.value),
-      dream: dreamRef.current?.value,
+      grade_aggregate: Number(wassceRef.current?.value),
+      interest: interestValue,
+      dream_job: dreamValue,
+      fav_sub1: favSub1,
+      fav_sub2: favSub2,
+      fav_sub3: favSub3,
+      learning_style: learning,
     };
-    console.log(data);
-    alert('Your data has been logged to the console for now, Backend will be added soon')
-    nameRef.current.value = "";
-    ageRef.current.value = "";
-    wassceRef.current.value = "";
-    beceRef.current.value = "";
-    ppcpRef.current.value = "";
-    dreamRef.current.value = "";
-    setPpValue("");
-    setGenderValue("");
+    try {
+      swal('Please wait while we fetch your recommendation', {
+        buttons: [false, false],
+      })
+      const res = await fetchResults(data)
+
+      console.log(res);
+      
+      
+
+
+      swal(
+        "Your data has been logged to the console for now, Backend will be added soon"
+      );
+      nameRef.current.value = "";
+      ageRef.current.value = "";
+      wassceRef.current.value = "";
+      setInterestValue("");
+      setGenderValue("");
+      setDreamValue("");
+      setfavSub1("");
+      setfavSub2("");
+      setfavSub3("");
+      setLearning("");
+    } catch (error) {
+      
+    }
+    
   };
 
   return (
     <main className="flex min-h-screen border-l-0 flex-col items-center gap-10 p-4">
       <Head>
-        <title>
-          Recommender Tool
-        </title>
+        <title>Recommender Tool</title>
       </Head>
       <h1 className="text-xl min-w-full font-bold mt-3">
         Enter your details and submit to get a recommendation
@@ -84,14 +111,20 @@ const Forms = () => {
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
             <label htmlFor="gender">Gender</label>
-            <select name="gender" id="gender" required>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+            <select
+              name="gender"
+              id="gender"
+              required
+              onChange={(e) => setGenderValue(e.target.value)}
+            >
+              <option value=""></option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
             </select>
           </div>
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
-            <label htmlFor="wassce">Wassce Score</label>
+            <label htmlFor="wassce">Wassce Aggregate</label>
             <input
               required
               type="number"
@@ -102,35 +135,101 @@ const Forms = () => {
           </div>
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
-            <label htmlFor="bece">Bece Score</label>
-            <input required type="number" name="bece" id="bece" ref={beceRef} />
+            <label htmlFor="interest">Interest</label>
+            <select
+              name="interest"
+              id="interest"
+              required
+              onChange={(e) => setInterestValue(e.target.value)}
+            >
+              <optgroup>
+                {programOptions.map((course, index) => (
+                  <option key={index} value={course}>
+                    {course}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
           </div>
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
-            <label htmlFor="pp">Preferred Program</label>
-            <select name="pp" id="pp" required>
-              {programOptions.map((course, index) => (
-                <option key={index} value={course.value}>
-                  {course.label}
+            <label htmlFor="dream">Dream Job</label>
+            <select
+              name="dream"
+              id="dream"
+              required
+              onChange={(e) => setDreamValue(e.target.value)}
+            >
+              {dream_job.map((job, index) => (
+                <option key={index} value={job}>
+                  {job}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
-            <label htmlFor="ppcp">Preferred Program cut-off point</label>
-            <input required type="number" name="ppcp" id="ppcp" ref={ppcpRef} />
+            <label htmlFor="fav1">Favorite Subject 1</label>
+            <select
+              name="fav1"
+              id="fav1"
+              required
+              onChange={(e) => setfavSub1(e.target.value)}
+            >
+              {fav_sub.map((job, index) => (
+                <option key={index} value={job}>
+                  {job}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
-            <label htmlFor="dream">Dream Job</label>
-            <input
+            <label htmlFor="fav2">Favorite Subject 2</label>
+            <select
+              name="fav2"
+              id="fav2"
               required
-              type="text"
-              name="dream"
-              id="dream"
-              ref={dreamRef}
-            />
+              onChange={(e) => setfavSub2(e.target.value)}
+            >
+              {fav_sub.map((job, index) => (
+                <option key={index} value={job}>
+                  {job}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2 w-full md:flex-1">
+            <label htmlFor="fav3">Favorite Subject 3</label>
+            <select
+              name="fav3"
+              id="fav3"
+              required
+              onChange={(e) => setfavSub3(e.target.value)}
+            >
+              {fav_sub.map((job, index) => (
+                <option key={index} value={job}>
+                  {job}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2 w-full md:flex-1">
+            <label htmlFor="learning">Learning Style</label>
+            <select
+              name="learning"
+              id="learning"
+              required
+              onChange={(e) => setLearning(e.target.value)}
+            >
+              {learning_styles.map((style, index) => (
+                <option key={index} value={style}>
+                  {style}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

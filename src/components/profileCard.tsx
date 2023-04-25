@@ -16,9 +16,9 @@ const ProfileCard: React.FC<CardProps> = ({ person }) => {
         <Image
           src={person.img}
           alt={person.name}
-          width={80}
-          height={80}
-          className="rounded-full bg-contain w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40"
+          width={150}
+          height={150}
+          className="rounded-full bg-cover bg-center bg-no-repeat w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40"
         />
       )}
       <h3 className="font-bold italic">{person.name}</h3>

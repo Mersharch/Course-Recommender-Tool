@@ -4,13 +4,13 @@ import Head from "next/head";
 
 const About = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center w-full">
+    <main className="flex min-h-screen flex-col items-center flex-1">
       <Head>
         <title>
           About Us
         </title>
       </Head>
-      <h1 className="text-base sm:text-xl min-w-full font-bold mt-3 ml-2">
+      <h1 className="text-base sm:text-xl min-w-full font-bold mt-3 ml-2 text-center">
         Meet the team that put all this together
       </h1>
       <div className="w-full p-5 grid grid-cols-2 md:grid-cols-3 gap-5">
