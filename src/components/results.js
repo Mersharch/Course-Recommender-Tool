@@ -30,8 +30,7 @@ export default async function fetchResults(data) {
   } catch (error) {
     console.log(error)
     return {
-      msgT: "Sorry",
-      msgB: "There was a problem getting your recommendation, Kindly try again.",
+      msg:  "We are sorry, we could not find a recommendation for you at the moment. Please try again later.",
       error,
     };
   }

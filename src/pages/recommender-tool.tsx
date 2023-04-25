@@ -33,6 +33,19 @@ const Forms = () => {
   const [favSub3, setfavSub3] = useState<string>("");
   const [learning, setLearning] = useState<string>("");
 
+  const clearInputs = () => {
+    nameRef.current.value = "";
+      ageRef.current.value = "";
+      wassceRef.current.value = "";
+      setInterestValue("");
+      // setGenderValue("");
+      setDreamValue("");
+      setfavSub1("");
+      setfavSub2("");
+      setfavSub3("");
+      setLearning("");
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (favSub1 === favSub2 || favSub1 === favSub3 || favSub2 === favSub3) {
@@ -76,22 +89,28 @@ const Forms = () => {
       const res = await fetchResults(data);
 
       // console.log(res);
+      if (!res.data) {
+        swal(
+          `Hey there ${nameRef.current?.value}`,
+          `${res.msg}`
+        );
+        console.log('error from request:   ', res.error);
+        clearInputs()
+        
+        return;
+      }
 
       swal(
         `Hey there ${nameRef.current?.value}`,
         `Your recommended course is ${res?.data}`
       );
-      nameRef.current.value = "";
-      ageRef.current.value = "";
-      wassceRef.current.value = "";
-      setInterestValue("");
-      // setGenderValue("");
-      setDreamValue("");
-      setfavSub1("");
-      setfavSub2("");
-      setfavSub3("");
-      setLearning("");
-    } catch (error) {}
+      clearInputs()
+      
+    } catch (error) {
+      console.log('error from handlesubmit:   ', error);
+      clearInputs()
+      
+    }
   };
 
   return (
