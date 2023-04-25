@@ -3,13 +3,12 @@ import { dream_job, fav_sub, learning_styles, programOptions } from "@/data";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import swal from "sweetalert";
-import fetchResults from '@/components/results'
-
+import fetchResults from "@/components/results";
 
 interface Data {
   // name: string;
   age: number;
-  gender: string;
+  // gender: string;
   grade_aggregate: number;
   interest: string;
   dream_job: string;
@@ -27,7 +26,7 @@ const Forms = () => {
   const wassceRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   const [interestValue, setInterestValue] = useState<string>("");
-  const [genderValue, setGenderValue] = useState<string>("");
+  // const [genderValue, setGenderValue] = useState<string>("");
   const [dreamValue, setDreamValue] = useState<string>("");
   const [favSub1, setfavSub1] = useState<string>("");
   const [favSub2, setfavSub2] = useState<string>("");
@@ -37,17 +36,27 @@ const Forms = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (favSub1 === favSub2 || favSub1 === favSub3 || favSub2 === favSub3) {
-      swal('Kindly make sure you have selected unique favorite subjects')
-      return
+      swal("Kindly make sure you have selected unique favorite subjects");
+      return;
     }
 
-    if (!nameRef.current.value || !ageRef.current.value || !genderValue || !wassceRef.current.value || !interestValue || !dreamValue || !favSub1 || !favSub2 || !favSub3 || !learning) {
-      swal('Kindly fill all the fields')
-      return
+    if (
+      !nameRef.current.value ||
+      !ageRef.current.value ||
+      !wassceRef.current.value ||
+      !interestValue ||
+      !dreamValue ||
+      !favSub1 ||
+      !favSub2 ||
+      !favSub3 ||
+      !learning
+    ) {
+      swal("Kindly fill all the fields");
+      return;
     }
     const data: Data = {
       age: Number(ageRef.current?.value),
-      gender: genderValue,
+      // gender: genderValue,
       grade_aggregate: Number(wassceRef.current?.value),
       interest: interestValue,
       dream_job: dreamValue,
@@ -57,33 +66,32 @@ const Forms = () => {
       learning_style: learning,
     };
     try {
-      swal('Please wait while we fetch your recommendation', {
-        buttons: [false, false],
-      })
-      const res = await fetchResults(data)
+      swal(
+        `Hey there, ${nameRef.current?.value}`,
+        "Your data is being processed, your recommendation will be here in just a moment.",
+        {
+          buttons: [false, false],
+        }
+      );
+      const res = await fetchResults(data);
 
-      console.log(res);
-      
-      
-
+      // console.log(res);
 
       swal(
-        "Your data has been logged to the console for now, Backend will be added soon"
+        `Hey there ${nameRef.current?.value}`,
+        `Your recommended course is ${res?.data}`
       );
       nameRef.current.value = "";
       ageRef.current.value = "";
       wassceRef.current.value = "";
       setInterestValue("");
-      setGenderValue("");
+      // setGenderValue("");
       setDreamValue("");
       setfavSub1("");
       setfavSub2("");
       setfavSub3("");
       setLearning("");
-    } catch (error) {
-      
-    }
-    
+    } catch (error) {}
   };
 
   return (
@@ -109,7 +117,7 @@ const Forms = () => {
             <input required type="number" name="age" id="age" ref={ageRef} />
           </div>
 
-          <div className="flex flex-col gap-2 w-full md:flex-1">
+          {/* <div className="flex flex-col gap-2 w-full md:flex-1">
             <label htmlFor="gender">Gender</label>
             <select
               name="gender"
@@ -121,7 +129,7 @@ const Forms = () => {
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
-          </div>
+          </div> */}
 
           <div className="flex flex-col gap-2 w-full md:flex-1">
             <label htmlFor="wassce">Wassce Aggregate</label>
